@@ -17,7 +17,9 @@ fn main(){
 
 
     
-    println!("The secret number is: {secret_number}");
+    //println!("The secret number is: {secret_number}");
+
+    loop{
 
     println!("Please input your guess.");
 
@@ -41,11 +43,19 @@ fn main(){
 //Result’s variants are Ok and Err. The Ok variant indicates the operation was successful, and it contains the successfully generated value. The Err variant means the operation failed, and it contains information about how or why the operation failed.
 //When printing the value of a variable, the variable name can go inside the curly brackets.
 
-let guess: u32 = guess.trim().parse().expect("Please type a number!");
+let guess: u32 = match guess.trim().parse() {
+  //parse returns a Result type and Result is an enum that has the variants Ok and Err. We’re using a match expression here, as we did with the Ordering result of the cmp method.
+  //If parse is able to successfully turn the string into a number, it will return an Ok value that contains the resultant number. That Ok value will match the first arm’s pattern, and the match expression will just return the num value that parse produced and put inside the Ok value. That number will end up right where we want it in the new guess variable we’re creating.
+  //If parse is not able to turn the string into a number, it will return an Err value that contains more information about the error. The Err value does not match the Ok(num) pattern in the first match arm, but it does match the Err(_) pattern in the second arm. The underscore, _, is a catch-all value; in this example, we’re saying we want to match all Err values, no matter what information they have inside them. So the program will execute the second arm’s code, continue, which tells the program to go to the next iteration of the loop and ask for another guess. So, effectively, the program ignores all errors that parse might encounter!
+
+   Ok(num) => num,
+   Err(_) => continue,
+};
 //Rust allows us to shadow the previous value of guess with a new one. Shadowing lets us reuse the guess variable name rather than forcing us to create two unique variables, such as guess_str and guess, for example.
 //The guess in the expression refers to the original guess variable that contained the input as a string.
 //The trim method on a String instance will eliminate any whitespace at the beginning and end, which we must do before we can convert the string to a u32, which can only contain numerical data. The user must press enter to satisfy read_line and input their guess, which adds a newline character to the string. For example, if the user types 5 and presses enter, guess looks like this: 5\n. The \n represents “newline.” (On Windows, pressing enter results in a carriage return and a newline, \r\n.) The trim method eliminates \n or \r\n, resulting in just 5.
-//The parse method on strings converts a string to another type.
+//The parse method on strings converts a string to another type.'
+
 println!("You guessed: {guess}");
 
 //When printing the result of evaluating an expression, place empty curly brackets in the format string, then follow the format string with a comma-separated list of expressions to print in each empty curly bracket placeholder in the same order.
@@ -60,9 +70,13 @@ println!("You guessed: {guess}");
   //We use a match expression to decide what to do next based on which variant of Ordering was returned from the call to cmp with the values in guess and secret_number.
      Ordering::Less => println!("Too small!"),
      Ordering::Greater => println!("Too big!"),
-     Ordering::Equal => println!("You win!!"),
+     Ordering::Equal =>{
+      println!("You win!!");
+      break;
+     }
      //A match expression is made up of arms. An arm consists of a pattern to match against, and the code that should be run if the value given to match fits that arm’s pattern. Rust takes the value given to match and looks through each arm’s pattern in turn. Patterns and the match construct are powerful Rust features: they let you express a variety of situations your code might encounter and they make sure you handle them all. 
+     
  }
-
+}
 
 }
